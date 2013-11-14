@@ -3,7 +3,7 @@
 library(data.table)
 library(plyr)
 ##set the working directory
-setwd("D:/spectralsignatures/flight3")
+setwd("D:/spectralsignatures/flight1")
 ##read the time files from the independent flights
 time=read.table("Datacube_GPS_Times.txt",sep="\t",skip=1)
 ##remove unnecessary columns
@@ -20,11 +20,11 @@ ILS_time$time<-as.numeric(strptime(ILS_time$time,format="%H:%M:%S"))
 time[2]=NULL
 time[2]=NULL
 time[2]=NULL
-#allflightvals=data.frame()
+allflightvals=data.frame()
 
 ##get all flight values
-flightfiles<-list.files()
-for (x in flightfiles[1:5]){
+flightfiles<-list.files(pattern="converted")
+for (x in flightfiles){
   values=read.table(x,sep=";",header=T)
   ##merge with time values of flight
   timed_values=merge(time,values,by="ID",all.values=T,all.times=F)
@@ -42,6 +42,8 @@ for (x in flightfiles[1:5]){
   uniqval$filename<-x
   allflightvals=rbind(allflightvals,uniqval)
   
-  #write.csv(combtimedvalues,file=paste("../timed_",x,sep=""),row.names=F)
+  write.csv(combtimedvalues,file=paste0("../timed_",unlist(strsplit(x,"\\."))[1],".csv"),row.names=F)
 }
+
+
 #write.csv(allflightvals,file="allflightvals.csv")

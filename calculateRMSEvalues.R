@@ -45,3 +45,23 @@ for(paneel in c(1:5)){
 colnames(uncorrectedvariance)<-c("band","variance uncorrected")
 colnames(correctedvariance)<-c("band","variance corrected")
 variancematrix<-merge(uncorrectedvariance,correctedvariance,by="band")
+install.packages("dataframes2xls",dependencies=T)
+
+library(XLConnect)
+files2write<-list(variancematrix,flightvalues,flightvalscorrected,ILSvalnorm,ILSvalues)
+ssnames<-c("variance matrix","original reflectance values","corrected reflectance values","normalized ILS values","ILS values in W m-2 L-1")
+
+
+#Create .xls file
+wb <- loadWorkbook("flightcorrectionoutput.xlsx", create = TRUE)
+
+for (output in 1:length(ssnames)){
+createSheet(wb,name=ssnames[output])
+
+#write data
+writeWorksheet(wb,as.data.frame(files2write[output]),sheet=ssnames[output])
+
+
+}
+#save .xls file
+saveWorkbook(wb)
